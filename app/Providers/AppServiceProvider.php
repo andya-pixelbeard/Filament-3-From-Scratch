@@ -20,5 +20,9 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         //
+        if ($this->app->environment() != 'production') {
+            $parse = parse_url(config('app.url'));
+            request()->headers->set('host', $parse['host']);
+        }
     }
 }
