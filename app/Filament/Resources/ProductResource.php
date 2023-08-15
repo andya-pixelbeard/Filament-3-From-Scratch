@@ -35,8 +35,11 @@ class ProductResource extends Resource
                         'sold out' => 'sold out',
                         'coming soon' => 'coming soon',
                     ]),
-                Forms\Components\Select::make('category_id') 
-                    ->relationship('category', 'name'), 
+                Forms\Components\Select::make('category_id')
+                    ->relationship('category', 'name'),
+                Forms\Components\Select::make('tags')
+                    ->relationship('tags', 'name')
+                    ->multiple(),
             ]);
     }
 
@@ -49,14 +52,15 @@ class ProductResource extends Resource
                     ->searchable(isIndividual: true, isGlobal: false),
                 Tables\Columns\TextColumn::make('price')
                     ->sortable()
-                    ->money('gbp') 
-                    ->getStateUsing(function (Product $record): float { 
-                        return $record->price / 100; 
-                    }), 
+                    ->money('gbp')
+                    ->getStateUsing(function (Product $record): float {
+                        return $record->price / 100;
+                    }),
                 Tables\Columns\TextColumn::make('status'),
-                Tables\Columns\TextColumn::make('category.name'), 
+                Tables\Columns\TextColumn::make('category.name'),
+                Tables\Columns\TextColumn::make('tags.name'),
             ])
-            ->defaultSort('price', 'desc') 
+            ->defaultSort('price', 'desc')
             ->filters([
                 //
             ])
@@ -73,14 +77,14 @@ class ProductResource extends Resource
                 Tables\Actions\CreateAction::make(),
             ]);
     }
-    
+
     public static function getRelations(): array
     {
         return [
-            //
+            RelationManagers\TagsRelationManager::class,
         ];
     }
-    
+
     public static function getPages(): array
     {
         return [
@@ -88,5 +92,5 @@ class ProductResource extends Resource
             'create' => Pages\CreateProduct::route('/create'),
             'edit' => Pages\EditProduct::route('/{record}/edit'),
         ];
-    }    
+    }
 }
