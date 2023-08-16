@@ -22,4 +22,8 @@ class Product extends Model
     {
         return $this->belongsToMany(Tag::class);
     }
+
+    public function getTableColumns() {
+        return $this->getConnection()->getSchemaBuilder()->getColumnListing($this->getTable());
+    }
 }

@@ -19,6 +19,12 @@ class ProductResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
+    protected static array $statuses = [
+        'in stock' => 'in stock',
+        'sold out' => 'sold out',
+        'coming soon' => 'coming soon',
+    ];
+
     public static function form(Form $form): Form
     {
         return $form
@@ -29,12 +35,8 @@ class ProductResource extends Resource
                 Forms\Components\TextInput::make('price')
                     ->required()
                     ->rule('numeric'),
-                Forms\Components\Select::make('status')
-                    ->options([
-                        'in stock' => 'in stock',
-                        'sold out' => 'sold out',
-                        'coming soon' => 'coming soon',
-                    ]),
+                Forms\Components\Radio::make('status')
+                    ->options(self::$statuses),
                 Forms\Components\Select::make('category_id')
                     ->relationship('category', 'name'),
                 Forms\Components\Select::make('tags')
@@ -58,12 +60,38 @@ class ProductResource extends Resource
                     }),
                 Tables\Columns\TextColumn::make('status'),
                 Tables\Columns\TextColumn::make('category.name'),
-                Tables\Columns\TextColumn::make('tags.name'),
+                Tables\Columns\TextColumn::make('tags.name'), 
             ])
             ->defaultSort('price', 'desc')
             ->filters([
-                //
-            ])
+                Tables\Filters\SelectFilter::make('status')
+                    ->options(self::$statuses),
+                Tables\Filters\SelectFilter::make('category')
+                    ->relationship('category', 'name'),
+                Tables\Filters\Filter::make('created_from')
+                    ->form([
+                        Forms\Components\DatePicker::make('created_from'),
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query
+                            ->when(
+                                $data['created_from'],
+                                fn (Builder $query, $date): Builder => $query->whereDate('created_at', '>=', $date),
+                            );
+                    }),
+                Tables\Filters\Filter::make('created_until')
+                    ->form([
+                        Forms\Components\DatePicker::make('created_until'),
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query
+                            ->when(
+                                $data['created_until'],
+                                fn (Builder $query, $date): Builder => $query->whereDate('created_at', '<=', $date),
+                            );
+                    }),
+                ], layout: Tables\Enums\FiltersLayout::AboveContent)
+                    ->filtersFormColumns(4)
             ->actions([
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
