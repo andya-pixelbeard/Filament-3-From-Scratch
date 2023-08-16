@@ -79,7 +79,9 @@ class ProductResource extends Resource
                         return $record->price / 100;
                     })
                     ->alignEnd(),
-                Tables\Columns\ToggleColumn::make('is_active'),
+                Tables\Columns\ToggleColumn::make('is_active')
+                    ->onColor('success')
+                    ->offColor('danger'),
                 Tables\Columns\SelectColumn::make('status')
                     ->options(self::$statuses),
                     // ->badge()
