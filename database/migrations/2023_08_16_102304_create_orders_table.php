@@ -16,6 +16,7 @@ return new class extends Migration
             $table->foreignId('product_id');
             $table->foreignId('user_id');
             $table->integer('price');
+            $table->boolean('is_completed')->default(false);
             $table->timestamps();
         });
     }

@@ -11,8 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('orders', function (Blueprint $table) {
-            $table->boolean('is_completed')->default(false);
+        Schema::table('products', function (Blueprint $table) {
+            $table->text('description');
         });
     }
 
@@ -21,8 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('orders', function (Blueprint $table) {
-            $table->dropColumn('is_completed');
+        Schema::table('products', function (Blueprint $table) {
+            $table->dropColumn('description');
         });
     }
 };

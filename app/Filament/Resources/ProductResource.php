@@ -29,20 +29,38 @@ class ProductResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('name')
-                    ->required()
-                    ->unique(ignoreRecord: true),
-                Forms\Components\TextInput::make('price')
-                    ->required()
-                    ->rule('numeric'),
-                Forms\Components\Radio::make('status')
-                    ->options(self::$statuses),
-                Forms\Components\Select::make('category_id')
-                    ->relationship('category', 'name'),
-                Forms\Components\Select::make('tags')
-                    ->relationship('tags', 'name')
-                    ->multiple(),
-            ]);
+                Forms\Components\Fieldset::make('Main data')
+                    ->schema([
+                        Forms\Components\TextInput::make('name')
+                            ->required()
+                            ->unique(ignoreRecord: true),
+                        Forms\Components\TextInput::make('price')
+                            ->required()
+                            ->rule('numeric'),
+                        Forms\Components\RichEditor::make('description')
+                            ->columnSpanFull()
+                            ->required(),
+
+                    ]),
+
+                // Could use a tab instead
+                // Forms\Components\Tabs\Tab::make('Additional data')
+
+                // Or  be made into a wixard
+                // Forms\Components\Wizard\Step::make('Additional data')
+
+                Forms\Components\Fieldset::make('Additional data')
+                    ->schema([
+                        Forms\Components\Radio::make('status')
+                            ->options(self::$statuses),
+                        Forms\Components\Select::make('category_id')
+                            ->relationship('category', 'name'),
+                        Forms\Components\Select::make('tags')
+                            ->relationship('tags', 'name')
+                            ->multiple(),
+                    ])
+            ])
+            ->columns(4);
     }
 
     public static function table(Table $table): Table
