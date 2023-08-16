@@ -11,6 +11,7 @@ class OrdersPerDay extends ChartWidget
 {
     protected static ?string $heading = 'Orders per day';
     protected int | string | array $columnSpan = 'full';
+    protected static ?string $pollingInterval = '5s';
 
     protected static ?string $maxHeight = '400px';
 
