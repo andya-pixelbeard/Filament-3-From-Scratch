@@ -59,13 +59,15 @@ class ProductResource extends Resource
                         return $record->price / 100;
                     })
                     ->alignEnd(),
-                Tables\Columns\TextColumn::make('status')
-                    ->badge()
-                    ->color(fn (string $state): string => match ($state) {
-                        'in stock' => 'primary',
-                        'sold out' => 'danger',
-                        'coming soon' => 'info',
-                    }),
+                Tables\Columns\ToggleColumn::make('is_active'),
+                Tables\Columns\SelectColumn::make('status')
+                    ->options(self::$statuses),
+                    // ->badge()
+                    // ->color(fn (string $state): string => match ($state) {
+                    //     'in stock' => 'primary',
+                    //     'sold out' => 'danger',
+                    //     'coming soon' => 'info',
+                    // }),
                 Tables\Columns\TextColumn::make('category.name')
                     ->label('Category name'),
                     // ->url(fn (Product $product): string => CategoryResource::getUrl('edit', ['record' => $product->category_id])),
