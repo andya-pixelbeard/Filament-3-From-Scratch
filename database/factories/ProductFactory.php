@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Category;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 
@@ -19,6 +20,11 @@ class ProductFactory extends Factory
     {
         return [
             'name' => fake()->unique()->name(),
+            'is_active' => true,
+            'status' => 'in stock',
+            'description' => fake()->unique()->name(),
+            'category_id' => Category::all()->random(1)->first()->id,
+            'price' => fake()->numberBetween(0, 10000)
         ];
     }
 }
